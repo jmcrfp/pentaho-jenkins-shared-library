@@ -107,12 +107,11 @@ class MavenBuilder extends AbstractBuilder implements IBuilder, Serializable {
     String file = Paths.get(item.buildWorkDir, item.buildFile ?: item.buildFramework.buildFile).toString()
 
     try {
-      return steps.buildMavenModule(
-        file: file,
-        activeProfiles: activeProfiles,
-        inactiveProfiles: inactiveProfiles,
-        userProperties: properties
-      )
+      def buildMavenModule = steps.buildMavenModule(file: file)
+      buildMavenModule.setActiveProfiles(activeProfiles)
+      buildMavenModule.setInactiveProfiles(inactiveProfiles)
+      buildMavenModule.setUserProperties(properties)
+      return buildMavenModule
     } catch(Throwable e) {
       buildData.error('Model Building', item, e)
       throw new BuilderException("Couldn't generate a Maven Module for this project.")
